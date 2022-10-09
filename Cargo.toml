@@ -1,0 +1,88 @@
+[package]
+edition = "2021"
+name = "rp2040-servo-tester"
+version = "0.1.0"
+
+[dependencies]
+cortex-m = "0.7"
+cortex-m-rt = "0.7"
+embedded-hal = { version = "0.2.5", features = ["unproven"] }
+
+defmt = "0.3"
+defmt-rtt = "0.4"
+fugit = "0.3.6"
+panic-probe = { version = "0.3", features = ["print-defmt"] }
+
+# We're using a Pico by default
+# rp-pico = "0.5"
+
+# but you can use any BSP. Uncomment this to use the pro_micro_rp2040 BSP instead
+# make sure to update the pin assignments in src/main.rs
+# sparkfun-pro-micro-rp2040 = "0.3"
+
+# If you're not going to use a Board Support Package you'll need these:
+# Rely on hal brought in by servo-pio
+rp2040-hal = { git="https://github.com/nashenas88/rp-hal", branch="dma-offshoot", features=["rt", "defmt", "critical-section-impl"] }
+rp2040-boot2 = "0.2"
+
+# Display for servo readings
+ssd1306 = "0.7.0"
+embedded-graphics = "0.7.1"
+
+servo-pio = { git = "https://github.com/nashenas88/servo-pio" }
+critical-section = "1.1.1"
+nb = "1.0.0"
+micromath = "2.0.0"
+
+
+# cargo build/run
+[profile.dev]
+codegen-units = 1
+debug = 2
+debug-assertions = true
+incremental = false
+opt-level = 3
+overflow-checks = true
+
+# cargo build/run --release
+[profile.release]
+codegen-units = 1
+debug = 2
+debug-assertions = false
+incremental = false
+lto = 'fat'
+opt-level = 3
+overflow-checks = false
+
+# do not optimize proc-macro crates = faster builds from scratch
+[profile.dev.build-override]
+codegen-units = 8
+debug = false
+debug-assertions = false
+opt-level = 0
+overflow-checks = false
+
+[profile.release.build-override]
+codegen-units = 8
+debug = false
+debug-assertions = false
+opt-level = 0
+overflow-checks = false
+
+# cargo test
+[profile.test]
+codegen-units = 1
+debug = 2
+debug-assertions = true
+incremental = false
+opt-level = 3
+overflow-checks = true
+
+# cargo test --release
+[profile.bench]
+codegen-units = 1
+debug = 2
+debug-assertions = false
+incremental = false
+lto = 'fat'
+opt-level = 3
